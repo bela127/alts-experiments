@@ -10,7 +10,8 @@ packages = [
 
 [tool.poetry.dependencies]
 python = ">=3.8,<3.10"
-alts-modules = { path = "/home/bela/Cloud/code/Git/alts-modules", develop = true }
+#alts-modules = { path = "/home/bela/Cloud/code/Git/alts-modules", develop = true }
+alts-modules = {git = "https://github.com/bela127/alts-modules.git"}
 libclang = "<12.0"
 coloredlogs = "^15.0.1"
 ipython = "^8.0.1"
