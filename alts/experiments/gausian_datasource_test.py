@@ -1,72 +1,40 @@
-from alts.modules.queried_data_pool import FlatQueriedDataPool
-from alts.modules.data_sampler import KDTreeKNNDataSampler, KDTreeRegionDataSampler
-from alts.core.oracle.oracle import Oracle
-from alts.core.query.query_optimizer import NoQueryOptimizer
-from alts.core.query.selection_criteria import NoSelectionCriteria
-from alts.modules.query.query_sampler import LastQuerySampler, RandomChoiceQuerySampler, UniformQuerySampler, LatinHypercubeQuerySampler
-from alts.core.oracle.augmentation import NoAugmentation
-from alts.modules.stopping_criteria import LearningStepStoppingCriteria
-from alts.core.blueprint import Blueprint
-from alts.modules.oracle.data_source import GausianProcessDataSource
-from alts.modules.evaluator import LogNewDataPointsEvaluator, PlotNewDataPointsEvaluator, PrintNewDataPointsEvaluator, PlotQueryDistEvaluator
-from alts.core.experiment_modules import ExperimentModules
+from alts.modules.blueprint import BaselineBlueprint
+from alts.modules.oracle.data_source import GaussianProcessDataSource, BrownianProcessDataSource
+from alts.modules.data_process.process import DataSourceProcess
+from alts.modules.oracle.query_queue import FCFSQueryQueue
 
-gp = GausianProcessDataSource((1,),(1,))()
-b1 = Blueprint(
+GPDS = GaussianProcessDataSource
+
+
+gp = GPDS()()
+b1 = BaselineBlueprint(
     repeat=3,
-    stopping_criteria= LearningStepStoppingCriteria(5),
-    oracle = Oracle(
-        data_source=gp,
-        augmentation= NoAugmentation()
+    process=DataSourceProcess(
+        query_queue=FCFSQueryQueue(),
+        data_source=gp
     ),
-    queried_data_pool=FlatQueriedDataPool(),
-    initial_query_sampler=LatinHypercubeQuerySampler(num_queries=30),
-    query_optimizer=NoQueryOptimizer(
-        selection_criteria=NoSelectionCriteria(),
-        num_queries=10,
-        query_sampler=UniformQuerySampler(),
-    ),
-    experiment_modules=ExperimentModules(),
-    evaluators=[PlotNewDataPointsEvaluator(), ],
-    exp_name="-multi_runs"
+    exp_name="multi_runs",
 )
 
-b2 = Blueprint(
-    repeat=1,
-    stopping_criteria= LearningStepStoppingCriteria(5),
-    oracle = Oracle(
-        data_source=GausianProcessDataSource((1,),(1,)),
-        augmentation= NoAugmentation()
+b2 = BaselineBlueprint(
+    process=DataSourceProcess(
+        query_queue=FCFSQueryQueue(),
+        data_source=GPDS()
     ),
-    queried_data_pool=FlatQueriedDataPool(),
-    initial_query_sampler=LatinHypercubeQuerySampler(num_queries=30),
-    query_optimizer=NoQueryOptimizer(
-        selection_criteria=NoSelectionCriteria(),
-        num_queries=10,
-        query_sampler=UniformQuerySampler(),
-    ),
-    experiment_modules=ExperimentModules(),
-    evaluators=[PlotNewDataPointsEvaluator(), ],
-    exp_name="-one_run"
+    exp_name="one_run",
 )
 
-b3 = Blueprint(
-    repeat=1,
-    stopping_criteria= LearningStepStoppingCriteria(5),
-    oracle = Oracle(
-        data_source=gp,
-        augmentation= NoAugmentation()
+b3 = BaselineBlueprint(
+    process=DataSourceProcess(
+        query_queue=FCFSQueryQueue(),
+        data_source=gp
     ),
-    queried_data_pool=FlatQueriedDataPool(),
-    initial_query_sampler=LatinHypercubeQuerySampler(num_queries=30),
-    query_optimizer=NoQueryOptimizer(
-        selection_criteria=NoSelectionCriteria(),
-        num_queries=10,
-        query_sampler=UniformQuerySampler(),
-    ),
-    experiment_modules=ExperimentModules(),
-    evaluators=[PlotNewDataPointsEvaluator(), ],
-    exp_name="-repeat_run"
+    exp_name="repeat_run",
 )
 
 blueprints = [b1,b2,b3]
+
+if __name__ == "__main__":
+    from alts.core.experiment_runner import ExperimentRunner
+    er = ExperimentRunner(xblueprints)
+    er.run_experiments()
