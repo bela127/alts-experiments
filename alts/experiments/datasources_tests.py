@@ -51,7 +51,6 @@ def create_blueprints():
             repeat=1,
 
             process=DataSourceProcess(
-                query_queue=FCFSQueryQueue(),
                 data_source=ds(query_shape = (1,), result_shape = (1,))
             ),
 

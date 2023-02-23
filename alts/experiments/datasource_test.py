@@ -11,7 +11,6 @@ blueprint = BaselineBlueprint(
     repeat=3,
 
     process=DataSourceProcess(
-        query_queue=FCFSQueryQueue(),
         data_source=LineDataSource((1,),(1,))
     ),
 

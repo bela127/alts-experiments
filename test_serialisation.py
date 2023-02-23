@@ -1,20 +1,35 @@
-from dataclasses import dataclass
 import pickle
-from typing import Tuple
+import copy
 
-from alts.modules.oracle.data_source import GaussianProcessDataSource
 import GPy
 import numpy as np
 
-#gp = GaussianProcessDataSource(kern = GPy.kern.Brownian())()
 
-@dataclass
-class Test:
-    kern: GPy.kern.Brownian = GPy.kern.Brownian()
+min_support = -1
+max_support = 1
+support_points = 10
+query_shape = (1,)
+result_shape = (1,)
 
-test = Test(GPy.kern.Brownian())
+kern = GPy.kern.Brownian() #use a kernel
 
-bytes = pickle.dumps(test)
+rng = np.random.RandomState(None)
+support = rng.uniform(min_support, max_support, (support_points, *query_shape))
+
+flat_support = support.reshape((support.shape[0], -1))
+
+results = np.random.normal(0, 1, (1, *result_shape))
+
+flat_results = results.reshape((1, -1))
+
+m = GPy.models.GPRegression(flat_support[:1], flat_results, kern, noise_var=0.0) #use the kernel in a model, so the kernel has a parent
+
+
+obj = copy.deepcopy(kern) #Now deepcopy the kernel ( now the '_parent_' attribute is set)
+print(obj)
+
+
+bytes = pickle.dumps(kern)
 
 
 obj = pickle.loads(bytes)
