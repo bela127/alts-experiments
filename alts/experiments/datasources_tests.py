@@ -5,33 +5,47 @@ from alts.modules.data_process.process import DataSourceProcess
 from alts.modules.oracle.data_source import LineDataSource
 
 from alts.modules.oracle.data_source import (
+    RandomUniformDataSource,
     LineDataSource,
     SquareDataSource,
+    PowDataSource,
+    ExpDataSource,
     CrossDataSource,
     DoubleLinearDataSource,
     HourglassDataSource,
     ZDataSource,
     ZInvDataSource,
     LinearPeriodicDataSource,
+    LinearStepDataSource,
     SineDataSource,
     HypercubeDataSource,
     StarDataSource,
+    HyperSphereDataSource,
+    IndependentDataSource,
     GaussianProcessDataSource,
+    BrownianProcessDataSource,
     )
 
 dss = [
+    RandomUniformDataSource,
     LineDataSource,
     SquareDataSource,
+    PowDataSource,
+    ExpDataSource,
     CrossDataSource,
     DoubleLinearDataSource,
     HourglassDataSource,
     ZDataSource,
     ZInvDataSource,
     LinearPeriodicDataSource,
+    LinearStepDataSource,
     SineDataSource,
     HypercubeDataSource,
     StarDataSource,
+    HyperSphereDataSource,
+    IndependentDataSource,
     GaussianProcessDataSource,
+    BrownianProcessDataSource,
 ]
 
 def create_blueprints():

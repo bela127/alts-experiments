@@ -1,5 +1,5 @@
 
-from alts.modules.oracle.data_source import LineDataSource
+from alts.modules.oracle.data_source import LineDataSource, IndependentDataSource
 from alts.modules.blueprint import BaselineBlueprint
 from alts.modules.data_process.process import DataSourceProcess
 from alts.modules.query.query_sampler import LatinHypercubeQuerySampler, UniformQuerySampler
@@ -13,11 +13,11 @@ blueprint = BaselineBlueprint(
     repeat=3,
 
     process=DataSourceProcess(
-        data_source=LineDataSource((1,),(1,))
+        data_source=IndependentDataSource((1,),(1,), reinit=True)()
     ),
 
     experiment_modules = InitQueryExperimentModules(
-    initial_query_sampler = LatinHypercubeQuerySampler(num_queries=10),
+    initial_query_sampler = LatinHypercubeQuerySampler(num_queries=1000),
     query_selector=ResultQuerySelector(
         query_optimizer=NoQueryOptimizer(query_sampler=LatinHypercubeQuerySampler()),
         query_decider=AllQueryDecider(),
